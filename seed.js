@@ -44,7 +44,7 @@ const seed = async () => {
     console.log('Reading users from data/users.json...');
     const usersData = JSON.parse(await fs.readFile(path.join(process.cwd(), 'data', 'users.json'), 'utf-8'));
     console.log(`Creating ${usersData.length} users...`);
-    
+
     const createdUsers = [];
     for (const userData of usersData) {
       // Use .create() so pre-save password hashing hook triggers
@@ -57,7 +57,7 @@ const seed = async () => {
     console.log('Reading products from data/products.json...');
     const productsData = JSON.parse(await fs.readFile(path.join(process.cwd(), 'data', 'products.json'), 'utf-8'));
     console.log(`Creating ${productsData.length} products...`);
-    
+
     // insertMany is fine for products as they don't have hooks
     const createdProducts = await Product.insertMany(productsData);
 

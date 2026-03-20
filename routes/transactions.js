@@ -155,6 +155,9 @@ router.post('/:id/return', async (req, res) => {
       });
     }
 
+    const refundTaxAmount = (totalRefund * (originalTxn.taxRate || 0)) / 100;
+    const finalRefundAmount = totalRefund + refundTaxAmount;
+
     // Generate refund receipt number
     const settings = await Setting.findOne() || { returnPrefix: 'RET-' };
     const receiptNumber = `${settings.returnPrefix}${Date.now()}-${Math.floor(Math.random() * 1000)}`;
@@ -165,7 +168,9 @@ router.post('/:id/return', async (req, res) => {
       parentTransactionId: originalTxn._id,
       items: processedItems,
       totalAmount: -totalRefund,
-      finalAmount: -totalRefund, // Simplification: assuming no tax refund for now or tax is included
+      taxAmount: -refundTaxAmount,
+      taxRate: originalTxn.taxRate || 0,
+      finalAmount: -finalRefundAmount, 
       paymentMethod: originalTxn.paymentMethod,
       cashierId: req.user._id,
       reason: reason || 'Customer Return',
