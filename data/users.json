@@ -1,0 +1,4 @@
+[
+  { "name": "Super Admin", "username": "admin", "password": "your_password_here", "role": "Super Admin", "active": true },
+  { "name": "John Worker", "username": "worker", "password": "your_password_here", "role": "Worker", "active": true }
+]
