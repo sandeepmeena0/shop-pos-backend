@@ -2,14 +2,14 @@
   {
     "name": "Super Admin",
     "username": "admin",
-    "password": "admin123",
+    "password": "123456",
     "role": "Super Admin",
     "active": true
   },
   {
     "name": "John Worker",
     "username": "worker",
-    "password": "worker123",
+    "password": "123456",
     "role": "Worker",
     "active": true
   }

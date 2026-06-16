@@ -107,15 +107,15 @@ router.get('/', async (req, res) => {
 // @access  Worker, Admin, Super Admin
 router.post('/:id/return', async (req, res) => {
   const { items, reason } = req.body; // items: [{ productId, quantity }]
-  
+
   try {
     const originalTxn = await Transaction.findById(req.params.id);
     if (!originalTxn) return res.status(404).json({ message: 'Original transaction not found' });
 
     // Find all previous returns for this transaction to check remaining returnable quantity
-    const previousReturns = await Transaction.find({ 
-      parentTransactionId: originalTxn._id, 
-      type: 'RETURN' 
+    const previousReturns = await Transaction.find({
+      parentTransactionId: originalTxn._id,
+      type: 'RETURN'
     });
 
     // Map of productId -> totalQtyReturnedSoFar
@@ -133,13 +133,13 @@ router.post('/:id/return', async (req, res) => {
     for (const returnItem of items) {
       const originalItem = originalTxn.items.find(i => i.productId.toString() === returnItem.productId);
       if (!originalItem) return res.status(400).json({ message: `Item ${returnItem.productId} not part of original sale` });
-      
+
       const alreadyReturned = returnedQtyMap[originalItem.productId.toString()] || 0;
       const remainingToReturn = originalItem.quantity - alreadyReturned;
 
       if (returnItem.quantity > remainingToReturn) {
-        return res.status(400).json({ 
-          message: `Cannot return ${returnItem.quantity} units of ${originalItem.name}. Only ${remainingToReturn} remaining from original sale (Already returned: ${alreadyReturned}).` 
+        return res.status(400).json({
+          message: `Cannot return ${returnItem.quantity} units of ${originalItem.name}. Only ${remainingToReturn} remaining from original sale (Already returned: ${alreadyReturned}).`
         });
       }
 
@@ -170,7 +170,7 @@ router.post('/:id/return', async (req, res) => {
       totalAmount: -totalRefund,
       taxAmount: -refundTaxAmount,
       taxRate: originalTxn.taxRate || 0,
-      finalAmount: -finalRefundAmount, 
+      finalAmount: -finalRefundAmount,
       paymentMethod: originalTxn.paymentMethod,
       cashierId: req.user._id,
       reason: reason || 'Customer Return',
@@ -201,7 +201,7 @@ router.get('/lookup/:receiptNumber', async (req, res) => {
   try {
     const transaction = await Transaction.findOne({ receiptNumber: req.params.receiptNumber })
       .populate('cashierId', 'name username');
-    
+
     if (!transaction) {
       return res.status(404).json({ message: 'Receipt not found' });
     }

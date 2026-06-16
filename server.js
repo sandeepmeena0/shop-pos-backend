@@ -9,6 +9,10 @@ import productRoutes from './routes/products.js';
 import transactionRoutes from './routes/transactions.js';
 import dashboardRoutes from './routes/dashboard.js';
 import inventoryRoutes from './routes/inventory.js';
+import { autoSeed } from './utils/autoSeed.js';
+import activityRoutes from './routes/activity.js';
+
+
 
 dotenv.config();
 
@@ -24,7 +28,10 @@ app.use(express.json());
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/shop-pos')
-  .then(() => console.log('✅  Connected to MongoDB'))
+  .then(async () => {
+    console.log('✅  Connected to MongoDB');
+    await autoSeed();
+  })
   .catch((err) => console.error('❌  MongoDB connection error:', err));
 
 // Routes
@@ -35,6 +42,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/activity', activityRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'OK', time: new Date() }));

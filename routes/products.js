@@ -41,7 +41,7 @@ router.post('/', authorize('Admin', 'Super Admin'), async (req, res) => {
   try {
     const productExists = await Product.findOne({ barcode });
     if (productExists) {
-        return res.status(400).json({ message: 'Product with this barcode already exists' });
+      return res.status(400).json({ message: 'Product with this barcode already exists' });
     }
 
     const settings = await Setting.findOne() || { defaultLowStockThreshold: 10 };
@@ -77,7 +77,7 @@ router.put('/:id', authorize('Admin', 'Super Admin'), async (req, res) => {
       if (req.body.barcode && req.body.barcode !== product.barcode) {
         const barcodeExists = await Product.findOne({ barcode: req.body.barcode });
         if (barcodeExists) {
-           return res.status(400).json({ message: 'Barcode is already used by another product' });
+          return res.status(400).json({ message: 'Barcode is already used by another product' });
         }
       }
 
@@ -87,9 +87,9 @@ router.put('/:id', authorize('Admin', 'Super Admin'), async (req, res) => {
       if (req.body.lowStockThreshold !== undefined) product.lowStockThreshold = req.body.lowStockThreshold;
       product.category = req.body.category || product.category;
       product.barcode = req.body.barcode || product.barcode;
-      
+
       if (typeof req.body.active !== 'undefined') {
-          product.active = req.body.active;
+        product.active = req.body.active;
       }
 
       const updatedProduct = await product.save();
