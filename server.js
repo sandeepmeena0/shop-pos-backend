@@ -28,9 +28,9 @@ app.use(express.json());
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/shop-pos')
-  .then(async () => {
+  .then(() => {
     console.log('✅  Connected to MongoDB');
-    await autoSeed();
+    autoSeed().catch((err) => console.error('❌  Background seeding error:', err));
   })
   .catch((err) => console.error('❌  MongoDB connection error:', err));
 
